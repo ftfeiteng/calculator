@@ -34,6 +34,8 @@ public class Calculator {
 		int ret = invalidate(pured);
 		if (ret == ERR_SYNTAX) {
 			throw new SyntaxException("Syntax Error");
+		} else if(ret == ERR_DIV_BY_0) {
+			throw new DividByZeroException("Divided by Zero");
 		}
 
 		String calTmp = pured;
@@ -122,6 +124,7 @@ public class Calculator {
 		for (int i = currentOperatorIndex - 1; i > 0; i--) {
 			if (isOperator(input.charAt(i))) {
 				leftOperatorIndex = i;
+				break;
 			}
 		}
 		return leftOperatorIndex + 1;
@@ -161,6 +164,7 @@ public class Calculator {
 		for (int i = currentOperatorIndex + 2; i < input.length(); i++) {
 			if (isOperator(input.charAt(i))) {
 				rightOperatorIndex = i;
+				break;
 			}
 		}
 
@@ -185,6 +189,10 @@ public class Calculator {
 			// set the index of first operator
 			if (ret < 0 && isOperator(input.charAt(i)) && i > 0) {
 				ret = i;
+				// got the result
+				if (isHighPrecedenceOperator(input.charAt(i))) {
+					break;
+				}
 			}
 		}
 		return ret;
